@@ -49,5 +49,4 @@ end
 """
 gaussian outputs a random sample from the Gaussian distribution.
 """
-gaussian(rng::ChaChaStream, T::Type, σ::Float64) = 
-    round(Int64, σ * randn(rng)) % T
+gaussian(rng::ChaChaStream, σ::Float64) = σ * randn(rng)

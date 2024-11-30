@@ -2,7 +2,7 @@ include("Carousel.jl")
 
 function main()
     # Parameter Selection. You can choose from the parameters in scheme/params.jl
-    param = params4
+    param = params4_v2
 
     _, entor, boot = setup(param)
     pr = boot.encoder.pr.Q
