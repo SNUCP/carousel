@@ -65,7 +65,7 @@ mutable struct SubringTransformer
 
         @assert iseven(d) "d = ord(p, m) is not even."
 
-        Ñ = factor(Vector, N) ⊆ [2, 3, 5] ? N : nextprod((2, 3, 5), 2N)
+        Ñ = factor(Vector, N) ⊆ [2, 3, 5, 7] ? N : nextprod((2, 3, 5), 2N)
 
         # Define buffers. 
         buff1 = Vector{ComplexF64}(undef, Ñ>>1+1)
