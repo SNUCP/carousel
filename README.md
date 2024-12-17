@@ -1,6 +1,6 @@
 # Carousel
 
-This repository provides an implementation of Carousel, the fully homomorphic encryption scheme based on [MS24].
+This repository provides an implementation of Carousel, the fully homomorphic encryption scheme based on [MS24] (https://eprint.iacr.org/2024/2032).
 
 Before you run the code, please make sure to install the following packages : ChaChaCiphers, FFTW, Primes, Nemo, LinearAlgebra.
 To install them, you can open the REPL and type the following commands.
