@@ -20,6 +20,6 @@ To run the test code, type the following command in the terminal.
 
 <pre>
 <code>
-julia Carousel.jl
+julia test.jl
 </code>
 </pre>
