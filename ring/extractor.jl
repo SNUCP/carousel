@@ -2,28 +2,22 @@
 An Extractor type for the subring.
 """
 mutable struct SubringExtractor
-    const M::Array{UInt32, 2}
+    const m::Int64
+    const idx::Vector{Int64}
     const buff::Vector{UInt32}
 
     function SubringExtractor(ffter::SubringTransformer)
-        N = ffter.N
-
-        ffta = fft(vcat(one(UInt64), zeros(UInt64, N-1)), ffter)
-        fftb = similar(ffta)
-        buff = Vector{UInt64}(undef, N)
-
-        M = zeros(UInt32, N, N)
-        @inbounds for i = 1 : N
-            @. fftb = ffta
-            circshift!(fftb, 1-i)
-            @. fftb *= ffta
-            ifftto!(buff, fftb, ffter)
-            @simd for j = eachindex(buff)
-                buff[j] != 0 && (M[j==1 ? 1 : N-j+2, (N-j+i)%N+1] = buff[j] % UInt32)
-            end
+        m, N = ffter.m, ffter.N
+        g = primitive_root_finder(m)
+        
+        idx = Vector{Int64}(undef, m-1)
+        @inbounds for i = 0:m-1
+            idx[powermod(g, i, m)] = (i % N) + 1
         end
 
-        new(M, buff)
+        buff = Vector{UInt32}(undef, N)
+
+        new(m, idx, buff)
     end
 end
 
@@ -31,11 +25,15 @@ end
 extract! performs sample extract for input polynomial a, and stores the value in res.
 """
 function extractto!(res::Vector{UInt32}, a::RingPoly, extor::SubringExtractor)
-    buff, M = extor.buff, extor.M
+    m, idx, buff = extor.m, extor.idx, extor.buff
 
     @inbounds @simd for i = eachindex(a.coeffs)
         buff[i] = divbits(a.coeffs[i], 32) % UInt32
     end
-    
-    matmul!(res, M, buff)
+
+    @. res = 0
+    res[idx[1]] = -buff[idx[m-1]]
+    @inbounds for i = 2:m-1
+        res[idx[i]] += buff[idx[m-i+1]] - buff[idx[m-i]]
+    end
 end
